@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Pattern Analysis: Southern California Fire Perimeters</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #ff5722;
+            border-bottom: 2px solid #ff5722;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #e64a19;
+        }
+        .author-info {
+            margin-top: 15px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+        .section {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+        .caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #ff7e5f;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            background-color: #fffacd;
+            padding: 15px;
+            border-left: 4px solid #ffd700;
+            margin: 20px 0;
+        }
+        .statistics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .stat-box {
+            flex-basis: 30%;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e64a19;
+            margin: 10px 0;
+        }
+        .stat-label {
+            font-size: 1em;
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .stat-box {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Point Pattern Analysis: Southern California Fire Perimeters</h1>
+        <div class="author-info">
+            Prepared by: Roger Bain<br>
+            Course: GIST602B Vector Spatial Analysis<br>
+            Date: April 17, 2025
+        </div>
+    </header>
+
+    <div class="section">
+        <h2>1. Introduction</h2>
+        <p>This report presents a comprehensive point pattern analysis of fire perimeters in Southern California. Using historical fire event data, we conducted multiple spatial statistical analyses to understand the distribution patterns of fire events across the region. Understanding these patterns is crucial for fire management, emergency preparedness, and ecological studies in fire-prone landscapes.</p>
+        
+        <p>The analysis employed several complementary spatial statistical methods:</p>
+        <ul>
+            <li>Density-based measurements (Point Density and Kernel Density)</li>
+            <li>Quadrat analysis with Variance-Mean Ratio calculation</li>
+            <li>Nearest Neighbor Analysis</li>
+            <li>Ripley's K Function for multi-distance pattern analysis</li>
+        </ul>
+        
+        <p>All analyses were conducted using ArcGIS Pro with the appropriate UTM Zone 11N projection, which is optimal for point pattern analysis in Southern California as it minimizes distance distortion.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Methodology</h2>
+        
+        <h3>2.1 Data Sources</h3>
+        <p>The analysis utilized the SoCalFirePoints dataset, which contains point locations representing historical fire events in Southern California. This dataset was derived from California Historical Fire Perimeters from 1950 onward, clipped to the Southern California region.</p>
+        
+        <h3>2.2 Analytical Approach</h3>
+        <p>We implemented a multi-method approach to thoroughly characterize the spatial patterns:</p>
+        
+        <h4>Density Analysis:</h4>
+        <p>Two complementary density analyses were performed:</p>
+        <ul>
+            <li><strong>Point Density Analysis:</strong> Used a uniform kernel with parameters - cell size: 2000m, radius: 20000m</li>
+            <li><strong>Kernel Density Analysis:</strong> Used a quartic kernel for smoother representation with similar parameters</li>
+        </ul>
+        
+        <h4>Quadrat Analysis:</h4>
+        <p>The study area was divided into an 8x10 grid of equal-sized quadrats. The number of fire events in each quadrat was counted and the Variance-Mean Ratio (VMR) was calculated to determine if the pattern showed clustering, randomness, or dispersion.</p>
+        
+        <h4>Nearest Neighbor Analysis:</h4>
+        <p>The Average Nearest Neighbor tool measured the average distance between each point and its nearest neighbor, comparing this to the expected distance in a random distribution.</p>
+        
+        <h4>Ripley's K Function:</h4>
+        <p>This multi-distance spatial analysis examined how clustering or dispersion changes across different distance thresholds.</p>
+    </div>
+
+    <div class="section">
+        <h2>3. Density Analysis Results</h2>
+        
+        <p>The density analyses revealed distinct clustering patterns of fire events across Southern California.</p>
+        
+        <div class="image-container">
+            <img src="images/PKD.png" alt="Point and Kernel Density Results">
+            <div class="caption">Figure 1: Point and Kernel Density analysis showing fire event concentrations in Southern California. Darker areas indicate higher fire event density.</div>
+        </div>
+        
+        <p>Several notable high-density clusters are visible in the density maps:</p>
+        <ul>
+            <li>A major concentration along the southern border region (San Diego County)</li>
+            <li>Significant clusters in the central region (likely Los Angeles County and surrounding areas)</li>
+            <li>A distinct pattern following the topography of the region, suggesting terrain influences on fire occurrence</li>
+        </ul>
+        
+        <p>The Kernel Density analysis produced a smoother surface compared to the Point Density analysis, highlighting broader regional patterns while reducing the emphasis on isolated events.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Quadrat Analysis Results</h2>
+        
+        <div class="image-container">
+            <img src="images/QA.png" alt="Quadrat Analysis Results">
+            <div class="caption">Figure 2: Quadrat analysis showing the count of fire events per quadrat. Red areas indicate quadrats with the highest fire occurrence (43-87 events).</div>
+        </div>
+        
+        <p>The quadrat analysis provided statistical confirmation of the clustering observed in the density analyses.</p>
+        
+        <div class="statistics">
+            <div class="stat-box">
+                <div class="stat-label">Total Fire Events</div>
+                <div class="stat-value">779</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Quadrats</div>
+                <div class="stat-value">80</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Mean Events per Quadrat</div>
+                <div class="stat-value">9.74</div>
+            </div>
+        </div>
+        
+        <h3>Variance-Mean Ratio Analysis:</h3>
+        <table>
+            <tr>
+                <th>Measure</th>
+                <th>Value</th>
+                <th>Interpretation</th>
+            </tr>
+            <tr>
+                <td>Observed Variance (s²)</td>
+                <td>386.96</td>
+                <td>High variability in fire events across quadrats</td>
+            </tr>
+            <tr>
+                <td>Variance-Mean Ratio (VMR)</td>
+                <td>39.74</td>
+                <td>Strongly clustered pattern (VMR >> 1)</td>
+            </tr>
+        </table>
+        
+        <div class="highlight">
+            <p>The extremely high Variance-Mean Ratio (39.74) provides strong statistical evidence of a clustered pattern, confirming the visual assessment from the quadrat map and density analyses. This value is significantly above 1, which would indicate a random distribution.</p>
+        </div>
+        
+        <p>The quadrat map shows several quadrats with very high fire counts (red cells with 43-87 events), while many others have few or no events (yellow cells). This uneven distribution creates the high variance observed in the statistical analysis.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Nearest Neighbor Analysis Results</h2>
+        
+        <div class="image-container">
+            <img src="images/ANN.png" alt="Average Nearest Neighbor Results">
+            <div class="caption">Figure 3: Average Nearest Neighbor analysis output showing statistical confirmation of clustering.</div>
+        </div>
+        
+        <p>The Average Nearest Neighbor analysis provided additional statistical confirmation of the clustered pattern:</p>
+        
+        <div class="statistics">
+            <div class="stat-box">
+                <div class="stat-label">Nearest Neighbor Ratio</div>
+                <div class="stat-value">0.45</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">z-score</div>
+                <div class="stat-value">-29.40</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">p-value</div>
+                <div class="stat-value">0.000000</div>
+            </div>
+        </div>
+        
+        <div class="highlight">
+            <p>The Nearest Neighbor Ratio of 0.45 indicates that fire events are, on average, much closer together than would be expected in a random distribution. The extremely low z-score (-29.40) and p-value (0.000000) demonstrate that this clustering is highly statistically significant with less than 1% likelihood that this pattern could be the result of random chance.</p>
+        </div>
+        
+        <p>The observed mean distance between fire events was 4,561.25 meters, compared to an expected mean distance of 10,149.76 meters if the distribution were random. This significant difference further confirms the clustered nature of Southern California fire events.</p>
+    </div>
+
+    <div class="section">
+        <h2>6. Ripley's K Function Results</h2>
+        
+        <div class="image-container">
+            <img src="images/RK.png" alt="Ripley's K Function Results">
+            <div class="caption">Figure 4: Ripley's K Function chart showing clustering across multiple distance bands.</div>
+        </div>
+        
+        <p>The Ripley's K function analysis examined how the clustering pattern changes across different distance scales:</p>
+        
+        <ul>
+            <li>The observed K values (blue line) consistently above the expected K values (red line) indicate clustering at all analyzed distance bands</li>
+            <li>The observed K values outside the confidence envelope (gray area) confirm that this clustering is statistically significant</li>
+            <li>The increasing difference between observed and expected K values at larger distances suggests that clustering becomes more pronounced at regional scales</li>
+        </ul>
+        
+        <p>This multi-scale analysis reveals that fire events in Southern California exhibit clustering at both local and regional scales, with particularly strong clustering at distances between 40-100 kilometers.</p>
+    </div>
+
+    <div class="section">
+        <h2>7. Discussion and Conclusions</h2>
+        
+        <p>The comprehensive point pattern analysis of Southern California fire events reveals several key findings:</p>
+        
+        <ol>
+            <li><strong>Consistent Evidence of Clustering:</strong> All four analytical methods (density analysis, quadrat analysis, nearest neighbor analysis, and Ripley's K function) provide strong, consistent evidence that fire events in Southern California exhibit a clustered spatial pattern rather than random or dispersed distributions.</li>
+            
+            <li><strong>Quantifiable Clustering Intensity:</strong> The extremely high Variance-Mean Ratio (39.74) and low Nearest Neighbor Ratio (0.45) quantify the intensity of this clustering, confirming it is both substantial and statistically significant.</li>
+            
+            <li><strong>Spatial Distribution of Clusters:</strong> The density and quadrat analyses reveal that fire events cluster most intensely in specific regions, particularly along a diagonal band running northwest to southeast through the region.</li>
+            
+            <li><strong>Multi-scale Clustering:</strong> Ripley's K function demonstrates that clustering occurs across multiple spatial scales, suggesting that both local factors (topography, vegetation) and regional factors (climate patterns, human settlement) influence fire occurrence.</li>
+        </ol>
+        
+        <h3>Implications for Fire Management:</h3>
+        <p>These findings have several important implications for fire management and planning in Southern California:</p>
+        
+        <ul>
+            <li>Resources for fire prevention and suppression should be strategically concentrated in the identified high-risk cluster areas</li>
+            <li>The strong statistical evidence for clustering suggests that predictive models based on spatial patterns could be effective for fire risk assessment</li>
+            <li>The multi-scale nature of clustering indicates that both local and regional approaches to fire management are necessary</li>
+            <li>Further investigation into the environmental and human factors corresponding to these cluster patterns is warranted</li>
+        </ul>
+        
+        <h3>Methodological Considerations:</h3>
+        <p>The UTM Zone 11N projection used in this analysis provided an appropriate coordinate system for accurate distance measurements in Southern California. The consistent results across multiple analytical methods strengthen the validity of the findings.</p>
+    </div>
+
+    <footer>
+        <p>Prepared using ArcGIS Pro with UTM Zone 11N projection | Data source: California Historical Fire Perimeters (1950+)</p>
+        <p>&copy; 2025 Roger Bain | GIST602B Vector Spatial Analysis</p>
+    </footer>
+</body>
+</html>
