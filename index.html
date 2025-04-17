@@ -1,0 +1,232 @@
+html<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire Point Pattern Analysis in Southern California</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, #ff7f50, #ff4500);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .author-info {
+            font-style: italic;
+            margin-top: 15px;
+        }
+        section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #ff4500;
+            border-bottom: 2px solid #ff7f50;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #ff6347;
+        }
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .caption {
+            font-style: italic;
+            margin-top: 10px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #ff7f50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .conclusion {
+            background: linear-gradient(135deg, #fff8f0, #fff0e6);
+        }
+        .references {
+            font-size: 0.9em;
+        }
+        .highlight-box {
+            background-color: #fff0e6;
+            border-left: 4px solid #ff7f50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Wildfire Point Pattern Analysis in Southern California</h1>
+        <div class="author-info">
+            <p>By: Roger Bain | GIST602B Vector Spatial Analysis | April 17, 2025</p>
+        </div>
+    </header>
+
+    <section id="problem-statement">
+        <h2>Problem Statement</h2>
+        <p>Wildfires have become increasingly common and severe in California, posing significant threats to communities, ecosystems, and infrastructure. Understanding the spatial distribution of these fires is crucial for effective resource allocation, prevention strategies, and emergency response planning.</p>
+        
+        <div class="highlight-box">
+            <p><strong>Null Hypothesis:</strong> Wildfire incidents in Southern California are randomly distributed across the landscape (follow Complete Spatial Randomness).</p>
+            
+            <p><strong>Research Question:</strong> Do wildfire incidents in Southern California exhibit statistically significant clustering patterns that may indicate underlying environmental or human factors?</p>
+        </div>
+    </section>
+
+    <section id="data">
+        <h2>Data</h2>
+        <p>The study area encompasses Southern California, a region characterized by diverse landscapes including coastal areas, mountain ranges, valleys, and desert ecosystems. This region experiences a Mediterranean climate with hot, dry summers and mild, wet winters, creating conditions conducive to wildfire activity. The area includes densely populated urban centers alongside extensive wildland-urban interface zones.</p>
+        
+        <p>The analysis utilizes fire perimeter data from the ArcGIS Online Living Atlas, containing 1,483 wildfire incidents recorded between 2019-2023. Each point represents the centroid of a fire perimeter, converted using the Feature To Point tool in ArcGIS Pro.</p>
+        
+        <div class="image-container">
+            <img src="./images/PKD.png" alt="Density Analysis of Wildfire Incidents">
+            <p class="caption">Figure 1: Point Density (left) and Kernel Density (right) Analysis of Wildfire Incidents in Southern California, 2019-2023.</p>
+        </div>
+    </section>
+
+    <section id="methods">
+        <h2>Methodology</h2>
+        
+        <h3>Projection</h3>
+        <p>The analysis employed the California Albers (NAD83) projection, which is specifically designed for California and maintains accurate area measurements across the state. This equal-area projection is crucial for density-based analyses and distance calculations, ensuring that spatial relationships between points are preserved accurately regardless of their location within the state.</p>
+        
+        <h3>Analysis Parameters</h3>
+        <p>The study included all 1,483 wildfire incidents across Southern California from 2019-2023, with each point representing the centroid of a fire perimeter. The analysis extent encompasses the entire Southern California region, defined by county boundaries. This extent was chosen to capture the complete fire regime while maintaining a manageable geographic scope for meaningful pattern analysis.</p>
+        
+        <h3>Quadrat Count Method</h3>
+        <p>The Quadrat Count method divides the study area into a grid of equal-sized cells and counts the number of points (fire incidents) in each cell. This approach identifies first-order effects by revealing where point densities are higher or lower. Statistical analysis of these counts, particularly the Variance-to-Mean Ratio (VMR), indicates whether the pattern exhibits clustering, dispersion, or randomness.</p>
+        
+        <h3>Average Nearest Neighbor</h3>
+        <p>The Average Nearest Neighbor method analyzes the distances between each point and its closest neighbor, comparing the observed average distance to the expected average distance under Complete Spatial Randomness. This second-order analysis produces a ratio that indicates clustering (ratio &lt; 1), randomness (ratio ≈ 1), or dispersion (ratio &gt; 1), along with statistical significance measures (z-score and p-value).</p>
+        
+        <h3>Ripley's K Function</h3>
+        <p>Ripley's K Function examines spatial patterns across multiple distance scales simultaneously. It counts the average number of points found within various distances of each point and compares these to expected values under Complete Spatial Randomness. This method reveals how patterns may change at different spatial scales and whether clustering or dispersion occurs at specific distances.</p>
+        
+        <h3>Analytical Assumptions</h3>
+        <p>For quadrat analysis, a 10×10 grid was used, creating 100 equal-sized quadrats across Southern California. This size was selected to balance between having sufficient counts in each quadrat while maintaining enough quadrats for meaningful statistical analysis. For the Ripley's K function, distances from 20,000 to 200,000 units were analyzed with 10 distance bands, and a 999-permutation confidence envelope was generated to assess statistical significance. Edge corrections were applied to account for the irregular boundary of the study area.</p>
+    </section>
+
+    <section id="results">
+        <h2>Results</h2>
+        
+        <h3>Quadrat Count Analysis</h3>
+        <div class="image-container">
+            <img src="./images/QA.png" alt="Quadrat Analysis of Wildfire Incidents">
+            <p class="caption">Figure 2: Quadrat Analysis showing the distribution of wildfire incidents across Southern California.</p>
+        </div>
+        
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Number of Trees (n)</td>
+                <td>108</td>
+            </tr>
+            <tr>
+                <td>Total Number of Quadrats (x)</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Mean Quadrat Count (μ)</td>
+                <td>1.08</td>
+            </tr>
+            <tr>
+                <td>Observed Variance (s²)</td>
+                <td>1.19</td>
+            </tr>
+            <tr>
+                <td>Variance-to-Mean Ratio (VMR)</td>
+                <td>1.10</td>
+            </tr>
+        </table>
+        
+        <p>The quadrat analysis reveals significant clustering of wildfire incidents across Southern California. With a VMR of 1.10 (greater than 1), the pattern shows more variation than would be expected under Complete Spatial Randomness. The visual representation demonstrates pronounced clustering in key regions, particularly near Los Angeles, San Diego, Bakersfield, and San Luis Obispo, with many quadrats containing zero or few incidents while others contain high concentrations.</p>
+        
+        <h3>Average Nearest Neighbor Analysis</h3>
+        <div class="image-container">
+            <img src="./images/ANN.png" alt="Average Nearest Neighbor Results">
+            <p class="caption">Figure 3: Average Nearest Neighbor analysis results showing significant dispersion of fire incidents.</p>
+        </div>
+        
+        <p>The Average Nearest Neighbor analysis yielded a Nearest Neighbor Ratio of 1.217965, with a z-score of 4.333409 and a p-value of 0.000015. These results indicate a dispersed pattern of fire incidents. The high positive z-score and very small p-value demonstrate that this dispersion is statistically significant, with less than a 1% likelihood that this dispersed pattern could result from random chance.</p>
+        
+        <h3>Ripley's K Function Analysis</h3>
+        <div class="image-container">
+            <img src="./images/RK.png" alt="Ripley's K Function Analysis">
+            <p class="caption">Figure 4: Ripley's K function showing clustering of fire incidents across multiple distances.</p>
+        </div>
+        
+        <p>The Ripley's K function analysis shows the red ObservedK line consistently above both the blue ExpectedK line and the upper confidence envelope across all distances. This indicates statistically significant clustering at all spatial scales examined. The clustering appears strongest at shorter distances, where the proportional difference between observed and expected values is greatest, though the pattern persists across regional scales.</p>
+    </section>
+
+    <section id="conclusion" class="conclusion">
+        <h2>Conclusion</h2>
+        
+        <p>This comprehensive point pattern analysis of Southern California wildfires reveals complex spatial patterns that vary depending on the analytical method and scale. The quadrat analysis and Ripley's K function both indicate significant clustering of fire incidents, while the Average Nearest Neighbor method suggests dispersion. These seemingly contradictory results can be explained by examining the different scales and perspectives of each analysis.</p>
+        
+        <p>The quadrat analysis reveals first-order clustering effects at a regional scale, showing that fires concentrate in specific geographic areas with suitable conditions for fire activity. The Ripley's K function confirms this clustering across multiple spatial scales, with particularly strong clustering at shorter distances. This suggests local environmental factors and potential fire spread mechanisms create hotspots of fire activity.</p>
+        
+        <p>Interestingly, the Average Nearest Neighbor result indicates dispersion at the nearest neighbor scale. This could reflect fire management practices that prevent multiple ignitions in immediate proximity, natural firebreaks that separate individual fire events, or reporting practices that consolidate nearby ignitions into single incidents. This dispersion at local scales combined with clustering at broader scales demonstrates the multi-scale complexity of wildfire patterns.</p>
+        
+        <h3>Limitations</h3>
+        
+        <p>Several limitations should be considered when interpreting these results. First, using centroids of fire perimeters rather than ignition points may distort the spatial pattern, as large fires could have ignition points far from their geometric centers. Second, the analysis does not account for temporal variations, such as seasonal effects or year-to-year changes in fire regimes. Finally, the heterogeneity of Southern California's landscape means that first-order effects (environmental factors) likely dominate the pattern, potentially masking second-order interactions between fire incidents.</p>
+        
+        <p>Future analyses could improve upon these limitations by incorporating ignition point data when available, conducting separate analyses for different seasons or years, and stratifying the analysis by ecological zones to better account for environmental heterogeneity. Additionally, incorporating covariates such as vegetation type, climate data, and human infrastructure could help explain the observed patterns.</p>
+    </section>
+
+    <section id="references" class="references">
+        <h2>References</h2>
+        <ul>
+            <li>Franklin, J., et al. (1985). Aerial photo analysis of forest structure in the Klamath National Forest, California.</li>
+            <li>Getis, A., & Franklin, J. (1987). Second-order neighborhood analysis of mapped point patterns. Ecology, 68(3), 473-477.</li>
+            <li>O'Sullivan, D., & Unwin, D. J. (2010). Geographic Information Analysis (2nd ed.). John Wiley & Sons.</li>
+            <li>ArcGIS Pro Documentation. (2024). Point Pattern Analysis Tools. Esri.</li>
+            <li>California Department of Forestry and Fire Protection (CAL FIRE). (2024). Fire Perimeter Database.</li>
+        </ul>
+    </section>
+</body>
+</html>
